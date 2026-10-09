@@ -3,11 +3,19 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing version tag to publish or repair
+        required: true
+        default: v3.19.0
 permissions:
   contents: write
 jobs:
   package:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,10 +31,15 @@ jobs:
           if len(found)!=1:raise SystemExit('Expected one application source directory')
           builder=found[0]
           version=json.loads((builder.parent/'BUILD_MANIFEST.json').read_text())['version']
-          if os.environ['GITHUB_REF_NAME']!='v'+version:raise SystemExit('Tag and application version differ')
+          if os.environ['RELEASE_TAG']!='v'+version:raise SystemExit('Tag and application version differ')
           subprocess.run(['python',str(builder),'--output','release-assets'],check=True)
           PY
       - name: Publish regular release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" release-assets/release.json release-assets/swing-lab-v3-update.zip --verify-tag --title "Swing Lab $GITHUB_REF_NAME" --generate-notes --latest
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release-assets/release.json release-assets/swing-lab-v3-update.zip --clobber
+          else
+            gh release create "$RELEASE_TAG" release-assets/release.json release-assets/swing-lab-v3-update.zip --verify-tag --title "Swing Lab $RELEASE_TAG" --generate-notes --latest
+          fi
