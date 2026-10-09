@@ -1,0 +1,32 @@
+name: Swing Lab reviewed release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+permissions:
+  contents: write
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Extract application source
+        run: python -m zipfile -e swing-lab-v3-source.zip source
+      - name: Build update assets
+        run: |
+          python - <<'PY'
+          import os, pathlib, subprocess, json
+          found=[p for p in pathlib.Path('.').rglob('build_update_release.py') if (p.parent/'app.py').exists() and (p.parent/'BUILD_MANIFEST.json').exists()]
+          if len(found)!=1:raise SystemExit('Expected one application source directory')
+          builder=found[0]
+          version=json.loads((builder.parent/'BUILD_MANIFEST.json').read_text())['version']
+          if os.environ['GITHUB_REF_NAME']!='v'+version:raise SystemExit('Tag and application version differ')
+          subprocess.run(['python',str(builder),'--output','release-assets'],check=True)
+          PY
+      - name: Publish regular release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release-assets/release.json release-assets/swing-lab-v3-update.zip --verify-tag --title "Swing Lab $GITHUB_REF_NAME" --generate-notes --latest
