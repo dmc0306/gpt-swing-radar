@@ -1,7 +1,10 @@
 # GPT Swing Radar
 
-Swing Lab v3.19.0 source and release distribution. The application source is in `swing-lab-v3-source.zip`, with its directory layout preserved.
+Swing Lab v3.20.0 source and release distribution. The application source is in `swing-lab-v3-source.zip`, with its directory layout preserved.
 
+- Central settings for data, scan filters, money, alerts and app management.
+- Modern white/black/blue responsive UI and simplified candidate flow.
+- Saved workspace preferences and one authentication-error panel.
 - Stock-name recovery and duplicate-code display fix.
 - Validated GitHub release updater with rollback.
 - Server checks for updates every five minutes.
