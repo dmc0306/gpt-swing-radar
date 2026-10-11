@@ -1,11 +1,14 @@
 # GPT Swing Radar
 
-Swing Lab v3.21.0 source and release distribution. The application source is in `swing-lab-v3-source.zip`, with its directory layout preserved.
+Swing Lab v3.21.1 source and release distribution. The application source is in `swing-lab-v3-source.zip`, with its directory layout preserved.
 
+- One compact activity panel with pause/resume and persistent details; tighter mobile spacing.
 - Paper account diagnostics, settlement progress, compatibility-checked updates and accessible motion.
 - Five-second server activity polling and bounded job history.
+- One compact activity panel with pause/resume and persistent details; tighter mobile spacing.
 - Paper account diagnostics, settlement progress, compatibility-checked updates and accessible motion.
 - Five-second server activity polling and bounded job history.
+- One compact activity panel with pause/resume and persistent details; tighter mobile spacing.
 - Paper account diagnostics, settlement progress, compatibility-checked updates and accessible motion.
 - Five-second server activity polling and bounded job history.
 - Fixed HTTP asset routing for modern-ui.css and ui-shell.js.
